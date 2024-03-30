@@ -79,13 +79,17 @@ WSGI_APPLICATION = 'littlelemon.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'reservations',
-        'HOST' : '127.0.0.1',
-        'PORT' : '3306',
+        'NAME': 'LittleLemon',
         'USER' : 'root',
         'PASSWORD' : 'Teddy!BeAr8OnT7',
+        'HOST' : '127.0.0.1',
+        'PORT' : '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
     }
 }
+
 
 # The settings for media files have been updated for the Graded assessment
 MEDIA_URL = '/media/'
