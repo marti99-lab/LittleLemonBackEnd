@@ -13,10 +13,25 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# urls.py(Project)
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter  # Import DefaultRouter
+from rest_framework import routers
+from restaurant import views
+from LittleLemonAPI import views
+
+router = DefaultRouter()
+
+router = routers.DefaultRouter()
+router.register(r'bookings', views.BookingViewSet)
+router.register(r'tables', views.BookingViewSet, basename='tables')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('restaurant.urls')),
+    path('', include(router.urls)),
+    path('restaurant/menu/',include('restaurant.urls')),
+    path('restaurant/booking/', include(router.urls)),
+    path('api/',include('LittleLemonAPI.urls')),
 ]

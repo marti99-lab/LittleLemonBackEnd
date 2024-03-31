@@ -5,8 +5,70 @@ from .models import Menu, Booking
 from django.core import serializers
 from datetime import datetime
 import json
+
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .serializers import bookingSerializer, menuSerializer, MenuItemSerializer
+
+# ListCreateAPIView handles the POST and GET method calls
+# RetrieveUpdateAPIView and DestroyAPIView both are responsible for processing GET, PUT and DELETE method calls
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework import generics
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets
+from .models import MenuItem
+
+
+@api_view()
+@permission_classes([IsAuthenticated])
+# @authentication_classes([TokenAuthentication])
+def msg(request):
+    return Response({"message":"This view is protected"})
+
+class BookingViewSet(viewsets.ModelViewSet):
+    queryset = Booking.objects.all()
+    serializer_class = bookingSerializer
+
+class bookingview(APIView):
+
+    def get(self,request):
+        first_name = Booking.objects.all()
+        serializer = bookingSerializer(first_name, many= True)
+        return Response(serializer.data) # Return JSON
+
+def post(self, request):
+        serializer = menuSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"status": "success", "data": serializer.data})
+
+class MenuItemView(ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Menu.objects.all()  # Adjust queryset to use Menu instead of Menuitem
+    serializer_class = MenuItemSerializer
+
+class MenuItemsView(generics.ListCreateAPIView):
+   permission_classes = [IsAuthenticated]
+   queryset = MenuItem.objects.all()
+   serializer_class = MenuItemSerializer
+
+class SingleMenuItemView(RetrieveUpdateDestroyAPIView):
+    queryset = Menu.objects.all()  # Adjust queryset to use Menu instead of Menuitem
+    serializer_class = MenuItemSerializer
+
+class MenuItemsView(generics.ListCreateAPIView):
+    queryset = Menu.objects.all()
+    serializer_class = MenuItemSerializer
+
+class SingleMenuItemView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
+    queryset = Menu.objects.all()
+    serializer_class = MenuItemSerializer
+
 
 # Create your views here.
 def home(request):
