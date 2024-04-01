@@ -15,11 +15,15 @@ Including another URLconf
 """
 # urls.py(Project)
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter  # Import DefaultRouter
 from rest_framework import routers
 from restaurant import views
 from LittleLemonAPI import views
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
 
 router = DefaultRouter()
 
@@ -28,6 +32,8 @@ router.register(r'bookings', views.BookingViewSet)
 router.register(r'tables', views.BookingViewSet, basename='tables')
 
 urlpatterns = [
+    path('accounts/', include('django.contrib.auth.urls')),
+#    path('signup/', views.signup, name='signup'),
     path('admin/', admin.site.urls),
     path('', include('restaurant.urls')),
     path('', include(router.urls)),
@@ -35,3 +41,13 @@ urlpatterns = [
     path('restaurant/booking/', include(router.urls)),
     path('api/',include('LittleLemonAPI.urls')),
 ]
+
+# def signup(request):
+#     if request.method == 'POST':
+#        form = UserCreationForm(request.POST)
+#        if form.is_valid():
+#            form.save()
+#            return redirect('login')
+#    else:
+#        form = UserCreationForm()
+#    return render(request, 'registration/signup.html', {'form': form})

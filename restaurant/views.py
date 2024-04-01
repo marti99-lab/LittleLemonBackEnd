@@ -77,6 +77,9 @@ def home(request):
 def about(request):
     return render(request, 'about.html')
 
+def registration(request):
+    return render(request, 'registration.html')
+
 def reservations(request):
     date = request.GET.get('date', datetime.today().date())
     bookings = Booking.objects.all()
