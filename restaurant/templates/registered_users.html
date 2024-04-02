@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section>
+  <article>
+    <h1>All Registered Users</h1>
+    <!--Begin row-->
+    <div class="row">
+      <!--Begin col-->
+      <div class="column">
+        <pre id="registered_users"></pre>
+      </div>
+      <!--End col-->
+
+      <!--Begin col-->
+      <div class="column">
+      </div>
+      <!--End col-->
+    </div>
+    <!--End row-->
+  </article>
+</section>
+<script>
+  const registered_users = JSON.parse('{{ registered_users|safe }}');
+  const pretty_json = JSON.stringify(registered_users, null, 2);
+  document.getElementById('registered_users').innerHTML = pretty_json;
+</script>
+{% endblock %}

@@ -3,20 +3,75 @@
 {% block content %}
 <section>
   <article class="registration-form">
-    <h2>User Registration</h2>
-    <form action="#" method="post">
-      {% csrf_token %}
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required>
+    <h1>User Registration</h1>
+    <div class="row">
+      <div class="column">
+        <form method="POST" id="registration-form">
+          {% csrf_token %} 
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required>
 
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required>
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required>
 
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required>
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required>
+          <button type="submit" id="button">Register</button>
+        </form>
+      </div>
+      <div class="column">
+        <h2>Registered Users <span id="userregistered"></span></h2>
+        <div id="usersreg">
 
-      <button type="submit">Register</button>
-    </form>
+        </div>
+      </div>
+    </div>
   </article>
 </section>
 {% endblock %}
+<script>
+  document.getElementById('registration-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      var username = document.getElementById('username').value;
+      var email = document.getElementById('email').value;
+      var password = document.getElementById('password').value;
+      var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+      if (!username.trim()) {
+          alert('Please enter a username.');
+          return;
+      }
+
+      var formData = {
+          username: username,
+          email: email,
+          password: password
+      };
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/register/', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader('X-CSRFToken', csrfToken);
+      xhr.onload = function() {
+          if (xhr.status === 200) {
+              var response = JSON.parse(xhr.responseText);
+              if (response.status === 'success') {
+                  alert('Registration successful!');
+                  updateRegisteredUsers(response.username);
+              } else {
+                  alert('Error registering user: ' + response.message);
+              }
+          } else {
+              alert('Error registering user.');
+          }
+      };
+      xhr.send(JSON.stringify(formData));
+  });
+
+  function updateRegisteredUsers(username) {
+      var newUserElement = document.createElement('p');
+      newUserElement.textContent = username;
+      document.getElementById('usersreg').appendChild(newUserElement);
+  }
+  </script>

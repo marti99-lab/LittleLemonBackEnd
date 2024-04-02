@@ -18,6 +18,7 @@ urlpatterns = [
     path('api-token-auth/', obtain_auth_token),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
+    path('register/', views.register_user, name='register_user'),
 ]
 
 # URL patterns for DRF views

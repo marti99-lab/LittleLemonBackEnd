@@ -21,7 +21,29 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from .models import MenuItem
+from django.contrib.auth.models import User
 
+# User Registration
+from django.http import JsonResponse
+from .models import User
+from django.shortcuts import render
+
+
+def register_user(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({'status': 'error', 'message': 'Username already exists'})
+
+        user = User.objects.create_user(username, email, password)
+        user.save()
+
+        return JsonResponse({'status': 'success', 'username': username})
+    else:
+        return render(request, 'registration.html')
 
 @api_view()
 @permission_classes([IsAuthenticated])
@@ -95,7 +117,6 @@ def book(request):
     context = {'form': form}
     return render(request, 'book.html', context)
 
-# Add your code here to create new views
 def menu(request):
     menu_data = Menu.objects.all()
     main_data = {"menu": menu_data}
